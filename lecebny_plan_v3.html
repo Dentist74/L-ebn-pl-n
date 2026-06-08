@@ -426,6 +426,14 @@ document.getElementById('p-dat').value=new Date().toISOString().split('T')[0];
 loadClinic();
 rLeg();
 rVyk();
+
+// Načtení dat z URL parametrů (z Dent21 bookmarkletu)
+(function(){
+  const p=new URLSearchParams(location.search);
+  const jmeno=p.get('jmeno'); if(jmeno){document.getElementById('p-jm').value=jmeno;}
+  const rc=p.get('rc'); if(rc){document.getElementById('p-rc').value=rc;}
+  const dat=p.get('dat'); if(dat){document.getElementById('p-nar').value=dat;}
+})();
 </script>
 </body>
 </html>
