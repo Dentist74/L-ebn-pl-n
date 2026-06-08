@@ -94,51 +94,47 @@ textarea{resize:vertical;min-height:70px;}
 <div class="cols">
 <!-- LEFT -->
 <div style="display:flex;flex-direction:column;gap:14px;">
-  <div class="card">
-    <div class="ct">🏥 Klinika &amp; vzhled <button class="ct-save" onclick="saveClinic()">💾 Uložit pro příště</button><span class="saved-badge" id="saved-badge">✓ Uloženo</span></div>
-    <div class="r2">
-      <div><label>Název kliniky</label><input type="text" id="k-naz" placeholder="Zubní klinika XY"></div>
-      <div><label>Motto</label><input type="text" id="k-mot" placeholder="Váš úsměv, naše poslání"></div>
-    </div>
-    <div class="r2">
-      <div><label>Adresa</label><input type="text" id="k-adr" placeholder="Ulice 1, Praha"></div>
-      <div><label>Telefon</label><input type="text" id="k-tel" placeholder="+420 123 456 789"></div>
-    </div>
-    <div class="r2">
-      <div><label>E-mail</label><input type="text" id="k-em" placeholder="info@klinika.cz"></div>
-      <div><label>Web</label><input type="text" id="k-web" placeholder="www.klinika.cz"></div>
-    </div>
-    <label>Barva kliniky</label>
-    <div class="crow">
-      <input type="color" id="bc" value="#C49A2A" onchange="setBrand()">
-      <span style="font-size:.79rem;color:var(--muted)">Akcentní barva (boční pruh, nadpisy v PDF)</span>
-    </div>
-    <label>Logo kliniky</label>
-    <div class="lz" id="lz" onclick="document.getElementById('li').click()">
-      <input type="file" id="li" accept="image/*" onchange="hLogo(event)">
-      <span style="font-size:.78rem;color:var(--muted)">+ Nahrát logo (PNG / SVG)</span>
-    </div>
-  </div>
+  
   <div class="card">
     <div class="ct">👤 Pacient</div>
     <div class="r2">
-      <div><label>Příjmení a jméno</label><input type="text" id="p-jm" placeholder="Novák Jan"></div>
-      <div><label>Datum narození</label><input type="date" id="p-nar"></div>
-    </div>
-    <div class="r2">
-      <div><label>Rodné číslo / ID</label><input type="text" id="p-rc" placeholder="850101/1234"></div>
-      <div><label>Pojišťovna</label>
-        <select id="p-poj"><option value="">– vyberte –</option><option>111 – VZP</option><option>201 – VoZP</option><option>205 – ČPZP</option><option>207 – OZP</option><option>209 – ZPŠ</option><option>211 – ZPMV</option><option>213 – RBP</option><option>Samoplátce</option></select>
+      <div><label>Titul před jménem</label>
+        <select id="p-tit">
+          <option value="">– bez titulu –</option>
+          <option>Bc.</option><option>BcA.</option>
+          <option>Ing.</option><option>Ing. arch.</option>
+          <option>Mgr.</option><option>MgA.</option>
+          <option>MUDr.</option><option>MDDr.</option>
+          <option>MVDr.</option><option>PhDr.</option>
+          <option>RNDr.</option><option>PharmDr.</option>
+          <option>JUDr.</option><option>ThDr.</option>
+          <option>doc.</option><option>prof.</option>
+        </select>
+      </div>
+      <div><label>Titul za jménem</label>
+        <select id="p-tit2">
+          <option value="">– bez titulu –</option>
+          <option>DiS.</option><option>Ph.D.</option>
+          <option>Th.D.</option><option>MBA</option>
+          <option>LL.M.</option><option>MSc.</option>
+          <option>CSc.</option><option>DrSc.</option>
+          <option>MHA</option><option>DBA</option>
+          <option>Ph.D., MBA</option>
+        </select>
       </div>
     </div>
     <div class="r2">
-      <div><label>Ošetřující lékař</label><input type="text" id="p-lek" placeholder="MUDr. Novotná"></div>
-      <div><label>Datum plánu</label><input type="date" id="p-dat"></div>
+      <div><label>Příjmení a jméno</label><input type="text" id="p-jm" placeholder="Novák Jan"></div>
+      <div><label>Rodné číslo / ID</label><input type="text" id="p-rc" placeholder="850101/1234"></div>
+    </div>
+    <div class="r2">
+      <div style="grid-column:1/-1"><label>Datum plánu</label><input type="date" id="p-dat" style="max-width:220px;"></div>
     </div>
   </div>
   <div class="card">
     <div class="ct">➕ Zubní kříž</div>
-    <p style="font-size:.8rem;color:var(--muted);margin-bottom:9px;">Nahrát foto nebo scan – v PDF se zobrazí otočený o 90° pro lepší zobrazení na stránce:</p>
+    <p style="font-size:.8rem;color:var(--muted);margin-bottom:9px;">Nahrát foto nebo scan – AI automaticky rozpozná značky a doplní legendu:</p>
+    <div id="ai-status" style="display:none;margin-bottom:8px;padding:8px 12px;border-radius:6px;font-size:.82rem;font-weight:600;"></div>
     <div class="uz" id="kz" onclick="document.getElementById('ki').click()">
       <input type="file" id="ki" accept="image/*" onchange="hKriz(event)">
       <div style="color:var(--ac);margin-bottom:5px;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
@@ -213,39 +209,15 @@ const ICONS={"chybi":{label:"Chyb\u011bj\u00edc\u00ed zub",b64:"iVBORw0KGgoAAAAN
 let actL=new Set(),actV=new Set(),logoD=null,krizD=null,brand='#C49A2A';
 
 // ── localStorage ──
-const LS_CLINIC='lp_clinic_v1', LS_LOGO='lp_logo_v1', LS_BRAND='lp_brand_v1';
 
-function saveClinic(){
-  const d={naz:gv('k-naz'),mot:gv('k-mot'),adr:gv('k-adr'),tel:gv('k-tel'),em:gv('k-em'),web:gv('k-web')};
-  localStorage.setItem(LS_CLINIC,JSON.stringify(d));
-  if(logoD) localStorage.setItem(LS_LOGO,logoD);
-  localStorage.setItem(LS_BRAND,brand);
-  const b=document.getElementById('saved-badge');
-  b.classList.add('show');
-  setTimeout(()=>b.classList.remove('show'),2500);
-}
+
+function saveClinic(){}
 
 function loadClinic(){
-  try{
-    const d=JSON.parse(localStorage.getItem(LS_CLINIC)||'{}');
-    if(d.naz) document.getElementById('k-naz').value=d.naz;
-    if(d.mot) document.getElementById('k-mot').value=d.mot;
-    if(d.adr) document.getElementById('k-adr').value=d.adr;
-    if(d.tel) document.getElementById('k-tel').value=d.tel;
-    if(d.em)  document.getElementById('k-em').value=d.em;
-    if(d.web) document.getElementById('k-web').value=d.web;
-    const savedLogo=localStorage.getItem(LS_LOGO);
-    if(savedLogo){logoD=savedLogo;showLogo();}
-    const savedBrand=localStorage.getItem(LS_BRAND);
-    if(savedBrand){brand=savedBrand;document.getElementById('bc').value=brand;document.documentElement.style.setProperty('--ac',brand);}
-  }catch(e){}
+  // Údaje kliniky jsou pevně nastaveny
 }
 
-function showLogo(){
-  const z=document.getElementById('lz');
-  z.classList.add('filled');
-  z.innerHTML=`<input type="file" id="li" accept="image/*" onchange="hLogo(event)"><img src="${logoD}"><button class="rm" onclick="rLogo(event)">✕</button>`;
-}
+function showLogo(){}
 
 // ── Legenda ──
 function rLeg(){
@@ -289,11 +261,136 @@ function ins(t){
 }
 
 // ── Logo / Kríž ──
-function hLogo(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{logoD=ev.target.result;showLogo();};r.readAsDataURL(f);}
-function rLogo(e){e.stopPropagation();logoD=null;const z=document.getElementById('lz');z.classList.remove('filled');z.innerHTML=`<input type="file" id="li" accept="image/*" onchange="hLogo(event)"><span style="font-size:.78rem;color:var(--muted)">+ Nahrát logo (PNG / SVG)</span>`;}
-function hKriz(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{krizD=ev.target.result;const z=document.getElementById('kz');z.classList.add('filled');z.innerHTML=`<input type="file" id="ki" accept="image/*" onchange="hKriz(event)"><img src="${krizD}"><button class="rm" onclick="rKriz(event)">✕</button>`;};r.readAsDataURL(f);}
+function hLogo(e){}
+function rLogo(e){}
+function hKriz(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    krizD=ev.target.result;
+    const z=document.getElementById('kz');
+    z.classList.add('filled');
+    z.innerHTML=`<input type="file" id="ki" accept="image/*" onchange="hKriz(event)"><img src="${krizD}"><button class="rm" onclick="rKriz(event)">✕</button>`;
+    analyzeKriz(krizD);
+  };
+  r.readAsDataURL(f);
+}
+
+async function analyzeKriz(imgData){
+  const st=document.getElementById('ai-status');
+  st.style.display='block';
+  st.style.background='#fffbea';
+  st.style.color='#7a5c1e';
+  st.style.border='1px solid #e8d080';
+  st.textContent='🔍 AI analyzuje zubní kříž…';
+
+  // Legend IDs and their Czech descriptions for the prompt
+  const legendDesc = [
+    {id:'chybi', label:'Chybějící zub'},
+    {id:'implant', label:'Implantát s korunkou'},
+    {id:'mustek', label:'Mezičlen můstku'},
+    {id:'neprorezan', label:'Neprořezaný zub'},
+    {id:'nezalozen', label:'Nezaložený zub'},
+    {id:'prorezvaji', label:'Prořezávající se zub'},
+    {id:'vypadla', label:'Vypadnutá výplň'},
+    {id:'rct_ok', label:'RCT – vyhovující ošetření kořenových kanálků'},
+    {id:'koren', label:'Kořen zubu'},
+    {id:'fraktura', label:'Zub s frakturou'},
+    {id:'kaz', label:'Zub s kazem'},
+    {id:'kompozit', label:'Fotokompozitní výplň'},
+    {id:'amalgam', label:'Amalgámová výplň'},
+    {id:'zdravy', label:'Zdravý zub'},
+    {id:'rct_renov', label:'RCT – znovu-ošetření kořenových kanálků'},
+    {id:'korunka_nok', label:'Nevyhovující korunka'},
+    {id:'rct_nutnost', label:'RCT – nutnost ošetření kořenových kanálků'},
+    {id:'vytazeni', label:'Zub k vytažení'},
+    {id:'vyplna_nok', label:'Nevyhovující výplň'},
+    {id:'uzavrena', label:'Uzavřená mezera'},
+    {id:'rct_plan', label:'RCT – plánované ošetření kořenových kanálků'},
+    {id:'korunka_ok', label:'Vyhovující korunka'},
+  ];
+
+  const listStr = legendDesc.map(l=>`- ${l.id}: ${l.label}`).join('\n');
+
+  const prompt = `Jsi expert na zubní dokumentaci. Analyzuj tento obrázek zubního kříže ze stomatologické ordinace.
+
+Zubní kříž zobrazuje stav chrupu pacienta pomocí grafických značek u jednotlivých zubů.
+
+Níže je seznam možných značek (id: popis):
+${listStr}
+
+Tvůj úkol: Podívej se na obrázek a urči, které z těchto značek jsou přítomny na zubním kříži.
+Vrať POUZE JSON pole s id těch značek, které vidíš. Bez vysvětlení, bez markdown, pouze čisté JSON pole.
+Příklad odpovědi: ["kaz","kompozit","implant","chybi"]
+
+Pokud nerozpoznáš žádné značky nebo obrázek není zubní kříž, vrať prázdné pole: []`;
+
+  try {
+    // Extract base64 without the data:image/...;base64, prefix
+    const base64Data = imgData.split(',')[1];
+    const mediaType = imgData.split(';')[0].split(':')[1] || 'image/jpeg';
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 500,
+        messages: [{
+          role: 'user',
+          content: [
+            {type:'image', source:{type:'base64', media_type:mediaType, data:base64Data}},
+            {type:'text', text:prompt}
+          ]
+        }]
+      })
+    });
+
+    if (!response.ok) throw new Error(`API error: ${response.status}`);
+    const data = await response.json();
+    const text = data.content.map(c=>c.text||'').join('').trim();
+
+    // Parse JSON array from response
+    let found = [];
+    try {
+      const clean = text.replace(/```json|```/g,'').trim();
+      found = JSON.parse(clean);
+      if (!Array.isArray(found)) found = [];
+    } catch(e) {
+      // try to extract array from text
+      const m = text.match(/\[.*?\]/s);
+      if (m) { try { found = JSON.parse(m[0]); } catch(e2){} }
+    }
+
+    // Apply to legend
+    const validIds = new Set(legendDesc.map(l=>l.id));
+    const applied = found.filter(id=>validIds.has(id));
+
+    if (applied.length > 0) {
+      applied.forEach(id=>actL.add(id));
+      rLeg();
+      st.style.background='#e8f5ee';
+      st.style.color='#1a4a2e';
+      st.style.border='1px solid #a8d8b8';
+      st.textContent=`✓ AI rozpoznala ${applied.length} značek a doplnila je do legendy`;
+    } else {
+      st.style.background='#f5f5f5';
+      st.style.color='#666';
+      st.style.border='1px solid #ddd';
+      st.textContent='ℹ️ AI nerozpoznala žádné specifické značky – zkontrolujte legendu ručně';
+    }
+    setTimeout(()=>{st.style.display='none';}, 6000);
+
+  } catch(err) {
+    st.style.background='#fdf0f0';
+    st.style.color='#a32d2d';
+    st.style.border='1px solid #f5c0c0';
+    st.textContent='⚠️ Chyba při analýze AI: '+err.message;
+    console.error('AI kriz error:', err);
+  }
+}
 function rKriz(e){e.stopPropagation();krizD=null;const z=document.getElementById('kz');z.classList.remove('filled');z.innerHTML=`<input type="file" id="ki" accept="image/*" onchange="hKriz(event)"><div style="color:var(--ac);margin-bottom:5px;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div><div style="font-size:.86rem;font-weight:600;color:#333;">Nahrát foto / scan zubního kříže</div><div style="font-size:.76rem;color:var(--muted);margin-top:4px;">PNG, JPG – klikněte nebo přetáhněte</div>`;}
-function setBrand(){brand=document.getElementById('bc').value;document.documentElement.style.setProperty('--ac',brand);}
+function setBrand(){}
 const gv=id=>document.getElementById(id).value.trim();
 const fmt=n=>n.toLocaleString('cs-CZ');
 const fmtD=s=>s?new Date(s).toLocaleDateString('cs-CZ'):'–';
@@ -301,8 +398,9 @@ const fmtD=s=>s?new Date(s).toLocaleDateString('cs-CZ'):'–';
 // ── PDF BUILD ──
 function buildPDF(){
   const bc=brand;
-  const kN=gv('k-naz')||'Zubní klinika',kM=gv('k-mot'),kA=gv('k-adr'),kT=gv('k-tel'),kE=gv('k-em'),kW=gv('k-web');
-  const pJ=gv('p-jm')||'–',pN=fmtD(gv('p-nar')),pR=gv('p-rc')||'–',pPo=document.getElementById('p-poj').value||'–',pL=gv('p-lek')||'–',pD=fmtD(gv('p-dat'))||new Date().toLocaleDateString('cs-CZ');
+  const kN='Svět úsměvů',kM='Váš úsměv, naše poslání',kA='Antonína Vaška 74, Háj ve Slezsku',kT='+420 724 275 048',kE='recepce@klinikasvetusmevu.cz',kW='www.klinikasvetusmevu.cz';
+  const LOGO_B64='data:image/png;base64,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IiIiIiIiIiIiIiIilllrRMt+ArJTMaG/2Rkju9zxvn3uXXZvYrfhXCzpKVwFfVuMNP8AkHT0nadw5esLv8JPbJhW0SM5GhgI/dhaY2mKh7sSWumOu5HSF49bnnX6IXA0EIqsQtJxJPYuiqX9VT+7wFlqmaWSeZ80z3SSPJc5zjqST1lfCIu+XOoiIiIr23Xa6W54dQXCqpSDqOilc34FWSLwgHVFmlFmrmHRtDYMVXANHIOeD8QlbmrmHWNLJ8WXEtPU14b8AsLRavZ4r32R3LPrH6XV5cbpcri8vr7hVVTiddZpXP8AiVZoi3AWWCIiIiLtMLX+7YZvlPebJWSUlbTuDmPYefcR1g9YXVovHNDhY6L0Eg3C9DslcxaLMfBcV2jDIa+E9FX04P3OQDmPyTzH/sszkcoM7KWL5MMZq0dDLKW0F5/sU7SeG+fubvWHaD9YqcEjtNV82xqhFHU7LfhOYXT0M5miudRkVHXbTwbFV2GixrSQgVNE8U1Y5o+XE75Dj+i7h+sonL0UzLtDMQYBvtme3U1VDK1nAH0w0lp/aAXnWum6M1RmpTG7/E/Q6eaqsUiDJQ4b0REXSKsREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREUp8oK9twy5tEgOroofJ39xYS34Ae1YFtNW15Nnu7W+gA+medOR+U3/wBS+dmu/ATV2G5n6dJ/aacHtA0eB4aH2raeYmGvsnwbXWtjR5QW9LTkjlI3i0ePEeJXEG9Diu07S/0Pp5K+/uKSw18woiIvuWN8Ur4pWFkjHFrmkaEEcwvhduqFFyASQACSeQC5Yx0j2sY0uc46NAHElSasOGcIZMYGpsS4too7jiCqA6OBwDi15GvRtB4cBzco1TUiAAWuToBvW2KIyX3AalRw80XXo+l82VvR897oHae3RWZBBIIII5gqQdNtM1jazdmwhbXUOunRh53g32aLM7T/AKF87YDSeSR2S/Ob6LQBFLr3EcH8epR3Vk0WcsdhxBvZbBAx2THZ/PJRIXYYesl2xDdobVZaCeurJjoyKFu8T/QLY2ZeRWMsJYhpaCkpJLvR107YaOpp2E6uceDXj5p9ykRY6TBWzVlwyuu3R1mJK1np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';
+  const pTit=document.getElementById('p-tit').value,pTit2=document.getElementById('p-tit2').value,pJbase=gv('p-jm')||'–',pJ=(pTit?pTit+' ':'')+pJbase+(pTit2?', '+pTit2:''),pR=gv('p-rc')||'–',pD=gv('p-dat')?new Date(gv('p-dat')).toLocaleDateString('cs-CZ'):new Date().toLocaleDateString('cs-CZ');
   const pH=gv('pl-h'),pDo=gv('pl-d'),pNa=gv('pl-n');
   const aL=Object.entries(ICONS).filter(([id])=>actL.has(id));
   const aV=[...actV].map(i=>VYK[i]);
@@ -310,7 +408,7 @@ function buildPDF(){
 
   const sbar=`<div style="position:absolute;left:0;top:0;bottom:0;width:13px;background:${bc};"></div>`;
   const tbar=`<div style="height:7px;background:${bc};"></div>`;
-  const logo=logoD?`<img src="${logoD}" style="max-height:46px;max-width:155px;object-fit:contain;">`:`<span style="font-size:1rem;font-weight:800;color:${bc};">${kN}</span>`;
+  const logo=`<img src="${LOGO_B64}" style="max-height:52px;max-width:180px;object-fit:contain;">`;
   const pc='padding:28px 44px 28px 40px;';
 
   // P1 – Titulní
@@ -362,10 +460,7 @@ function buildPDF(){
     <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:${bc};margin-bottom:10px;">Na základě klinických a pomocných vyšetření Vám navrhujeme individuální plán léčby:</div>
     <div style="background:#f9f9f9;border:1px solid #eee;border-radius:6px;padding:9px 13px;display:grid;grid-template-columns:1fr 1fr;gap:3px 18px;font-size:.82rem;margin-bottom:14px;">
       <div><span style="color:#999;font-weight:500;">Pacient: </span>${pJ}</div>
-      <div><span style="color:#999;font-weight:500;">Datum nar.: </span>${pN}</div>
       <div><span style="color:#999;font-weight:500;">Rod. číslo: </span>${pR}</div>
-      <div><span style="color:#999;font-weight:500;">Pojišťovna: </span>${pPo}</div>
-      <div><span style="color:#999;font-weight:500;">Ošetřující: </span>${pL}</div>
       <div><span style="color:#999;font-weight:500;">Datum plánu: </span>${pD}</div>
     </div>
     ${pH?`<div style="margin-bottom:13px;"><div style="${ss}">Horní čelist</div><div style="font-size:.86rem;line-height:1.7;white-space:pre-line;">${pH}</div></div>`:''}
@@ -399,8 +494,9 @@ function buildPDF(){
 function doPrint(){buildPDF();setTimeout(()=>window.print(),450);}
 
 function resetPacient(){
-  ['p-jm','p-nar','p-rc','p-lek','p-dat','pl-h','pl-d','pl-n'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('p-poj').value='';
+  ['p-jm','p-rc','p-dat','pl-h','pl-d','pl-n'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('p-tit').value='';
+  document.getElementById('p-tit2').value='';
   document.getElementById('p-dat').value=new Date().toISOString().split('T')[0];
   actL.clear();actV.clear();krizD=null;rLeg();rVyk();
   rKriz({stopPropagation:()=>{}});
@@ -427,13 +523,7 @@ loadClinic();
 rLeg();
 rVyk();
 
-// Načtení dat z URL parametrů (z Dent21 bookmarkletu)
-(function(){
-  const p=new URLSearchParams(location.search);
-  const jmeno=p.get('jmeno'); if(jmeno){document.getElementById('p-jm').value=jmeno;}
-  const rc=p.get('rc'); if(rc){document.getElementById('p-rc').value=rc;}
-  const dat=p.get('dat'); if(dat){document.getElementById('p-nar').value=dat;}
-})();
+// Ruční zadání údajů pacienta
 </script>
 </body>
 </html>
